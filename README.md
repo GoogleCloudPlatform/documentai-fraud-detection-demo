@@ -35,7 +35,7 @@ Here is a [link](https://cloud.google.com/document-ai/docs/invoice-parser) to th
 1. Execute Bash shell scripts in your Cloud Shell terminal to create cloud resources (i.e Google Cloud Storage Buckets, Pub/Sub topics, Cloud Functions, BigQuery tables)
 
      1. Change directory to the scripts folder
-          * cd scripts
+          * cd documentai-fraud-detection-demo/scripts
 
      1. Make all your .sh files executable
           * chmod +x create-output-bucket.sh
