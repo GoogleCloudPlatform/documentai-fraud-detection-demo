@@ -37,6 +37,9 @@ Here is a [link](https://cloud.google.com/document-ai/docs/invoice-parser) to th
      1. Change directory to the scripts folder
           * cd documentai-fraud-detection-demo/scripts
 
+     1. Update the value of PROJECT_ID in .env.local to match your current projectID
+          * vi .env.local
+     
      1. Make all your .sh files executable
           * chmod +x create-output-bucket.sh
           * chmod +x create-archive-bucket.sh
