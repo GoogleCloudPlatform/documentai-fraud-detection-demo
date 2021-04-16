@@ -1,0 +1,7 @@
+# Function dependencies, for example:
+# package>=version
+googlemaps==4.4.2
+google-cloud-pubsub==1.7.0
+requests==2.25.1
+urllib3==1.26.2
+google-cloud-bigquery==1.26.1
