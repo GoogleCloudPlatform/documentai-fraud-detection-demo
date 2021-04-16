@@ -29,7 +29,8 @@ Learn how to use Google Cloud Platform to *process and enrich* invoices so that 
 1. Request access for specialized parsers via [link](https://docs.google.com/forms/d/e/1FAIpQLSc_6s8jsHLZWWE0aSX0bdmk24XDoPiE_oq5enDApLcp1VKJ-Q/viewform?gxids=7826). 
 Here is a [link](https://cloud.google.com/document-ai/docs/invoice-parser) to the **official Google Cloud Invoice parser documentation**.
 
-1. Activate your Command Shell and clone this GitHub Repo in your Command shell
+1. Activate your Command Shell and clone this GitHub Repo in your Command shell using the below command - 
+  git clone https://github.com/GoogleCloudPlatform/documentai-fraud-detection-demo.git
 
 1. Execute Bash shell scripts in your Cloud Shell terminal to create cloud resources (i.e Google Cloud Storage Buckets, Pub/Sub topics, Cloud Functions, BigQuery tables)
 
