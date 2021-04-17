@@ -76,21 +76,25 @@ Here is a [link](https://cloud.google.com/document-ai/docs/invoice-parser) to th
 
 1. Edit Environment variables 
      * Edit the Cloud Function geocode-addresses 
-          * Update the API_key value under environment variable to match to your API Key 
-          * Update the API_key value under .env.yaml to match to your API Key 
+          * Under "Runtime environment variables", update the API_key value to match to the API Key value created above
+          * Click Next and select .env.yaml and then update the API_key value to match to the API Key value created above
+          * Click Deploy
      * Edit the Cloud Function get-kg-data
-          * Update the API_key value under environment variable to match to your API Key 
-          * Update the API_key value under .env.yaml to match to your API Key 
+          * Under "Runtime environment variables", update the API_key value to match to the API Key value created above 
+          * Click Next and select .env.yaml and then update the API_key value to match to the API Key value created above
+          * Click Deploy
      * Edit the Cloud Function process-invoices
-          * Update the PROCESSOR_ID value under environment variable to match to your processor's ID 
-          * Update the PROCESSOR_ID value under .env.yaml to match to your processor's ID
-          * Update the PARSER_LOCATION value under environment variable to match to your processor's region
-          * Update the PARSER_LOCATION value under .env.yaml to match to your processor's region
+          * Under "Runtime environment variables", Update the PROCESSOR_ID value to match to your processor's ID 
+          * Under "Runtime environment variables", Update the PARSER_LOCATION value under environment variable to match to your processor's region
+          * Click Next and select .env.yaml 
+          * Update the PROCESSOR_ID value to match to your processor's ID
+          * Update the PARSER_LOCATION to match to your processor's region
+          * Click Deploy
           
  1. Testing/Validating the demo
      * Upload a sample invoice in the input bucket
      * At the end of the processing, you should expect your BigQuery tables to be populated with extracted entities as well as enriched data (i.e placesID, lat, long, formatted address, name, url, description, kgscore)
-     * Reading the results, we can now build custom business intelligenve rules using these enriched fields to enable fraud detection. For example, if the address is not something the Geocoding API can find, then it is an indicator of either incorrect value or fraudulent invoice
+     * Reading the results, we can now build custom business intelligence rules using these enriched fields to enable fraud detection. For example, if the address is not something the Geocoding API can find, then it is an indicator of either incorrect value or fraudulent invoice
      
       
 
