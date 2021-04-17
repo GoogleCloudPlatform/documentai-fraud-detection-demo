@@ -77,9 +77,13 @@ Here is a [link](https://cloud.google.com/document-ai/docs/invoice-parser) to th
 1. Edit Environment variables 
      * Edit the Cloud Function geocode-addresses 
           * Under "Runtime environment variables", update the API_key value to match to the API Key value created above
+          
             ![diagram](/Update-runtime-variables.png)
+          
           * Click Next and select .env.yaml and then update the API_key value to match to the API Key value created above
+          
             ![diagram](/Update-api-key-.env.png)
+          
           * Click Deploy
      * Edit the Cloud Function get-kg-data
           * Under "Runtime environment variables", update the API_key value to match to the API Key value created above 
