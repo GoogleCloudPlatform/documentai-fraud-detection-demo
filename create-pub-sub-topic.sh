@@ -7,6 +7,3 @@ source "${DIR}/.env.local"
 gcloud pubsub topics \
   create ${GEO_CODE_REQUEST_PUBSUB_TOPIC}
   
-gcloud pubsub topics \
-  create ${KG_REQUEST_PUBSUB_TOPIC}
-  
