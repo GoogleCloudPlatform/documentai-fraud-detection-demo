@@ -1,4 +1,4 @@
-# Document AI Fraud Detection Demo
+# Document AI Fraud Detection Demo with Enterprise Knowledge Graph
 
 ## Objective
 
@@ -8,15 +8,17 @@ Learn how to use Google Cloud Platform to *process and enrich* invoices so that 
 
 ![diagram](img/steps-in-a-diagram.png)
 
-## Services/Tech used in the Demo
+## Cloud Services used in the Demo
 
 * [Google Cloud Document AI](https://cloud.google.com/document-ai)
+* [Procurement DocAI](https://cloud.google.com/solutions/procurement-doc-ai)
+  * [Invoice Parser](https://cloud.google.com/document-ai/docs/processors-list#processor_invoice-processor)
+  * [Enterprise Knowledge Graph](https://cloud.google.com/document-ai/docs/ekg-enrichment)
 * [Google Cloud Storage](https://cloud.google.com/storage)
 * [Google Cloud Pub/Sub](https://cloud.google.com/pubsub/docs/overview)
 * [Google Cloud Functions](https://cloud.google.com/functions)
 * [Cloud Build](https://cloud.google.com/build)
 * [Geocoding API](https://developers.google.com/maps/documentation/geocoding/start)
-* [Knowledge Graph Search API](https://developers.google.com/knowledge-graph)
 * [BigQuery](https://cloud.google.com/bigquery)
 
 ## Steps to re-create this demo in your own GCP environment
@@ -27,7 +29,6 @@ Learn how to use Google Cloud Platform to *process and enrich* invoices so that 
    * Cloud Document AI API
    * Cloud Functions API
    * Geocoding API
-   * Knowledge Graph Search API
    * Cloud Build API
 
 ```sh
@@ -63,11 +64,11 @@ gcloud services enable cloudbuild.googleapis.com
 
    * [Create an API Key](https://cloud.google.com/docs/authentication/api-keys#creating_an_api_key) - Note the **api key value**, you will need to plug this values in your cloud function's environment variables
   
-   * Paste the API Key in the `geocode-addresses/.env.yaml` and `get-kg-data/.env.yaml` files
+   * Paste the API Key in the `geocode-addresses/.env.yaml` file.
 
    * [Add API restrictions](https://cloud.google.com/docs/authentication/api-keys#adding_api_restrictions) - To set API restrictions:
         1. Select Restrict key in the API restrictions section.
-        2. Select Geocoding API, Knowledge Graph Search API that your API key needs to call from the dropdown.
+        2. Select Geocoding API from the dropdown.
         3. Select the Save button.
 
 3. Create your Doc AI processor

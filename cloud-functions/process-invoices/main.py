@@ -35,7 +35,13 @@ dataset_name = 'invoice_parser_results'
 entities_table_name = 'doc_ai_extracted_entities'
 ekg_table_name = 'knowledge_graph_details'
 
-docai_client = documentai.DocumentProcessorServiceClient()
+client_options = {
+    "api_endpoint": f"{location}-documentai.googleapis.com"
+}
+
+docai_client = documentai.DocumentProcessorServiceClient(
+    client_options=client_options)
+
 storage_client = storage.Client()
 bq_client = bigquery.Client()
 pub_client = pubsub_v1.PublisherClient()
