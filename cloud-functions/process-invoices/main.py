@@ -15,7 +15,6 @@ project_id = os.environ.get('GCP_PROJECT')
 location = os.environ.get('PARSER_LOCATION')
 processor_id = os.environ.get('PROCESSOR_ID')
 geocode_request_topicname = os.environ.get('GEOCODE_REQUEST_TOPICNAME')
-kg_request_topicname = os.environ.get('KG_REQUEST_TOPICNAME')
 timeout = int(os.environ.get('TIMEOUT'))
 
 # An array of Future objects
@@ -33,7 +32,6 @@ destination_uri = f"gs://{gcs_output_bucket}/{gcs_output_uri_prefix}/"
 
 dataset_name = 'invoice_parser_results'
 entities_table_name = 'doc_ai_extracted_entities'
-ekg_table_name = 'knowledge_graph_details'
 
 client_options = {
     "api_endpoint": f"{location}-documentai.googleapis.com"
@@ -91,12 +89,26 @@ def extract_document_entities(document: documentai.Document) -> dict:
         """
         entity_key = entity.type_.replace('/', '_')
         normalized_value = getattr(entity, "normalized_value", None)
-        document_entities.update({
-            entity_key: {
-                "value": entity.mention_text,
-                "enriched_value": normalized_value.text if normalized_value else None
-            }
-        })
+
+        new_entity = {
+            "value": entity.mention_text,
+            "enriched_value": normalized_value.text if normalized_value else None
+        }
+
+        existing_entity = document_entities.get(entity_key)
+
+        # For entities that can have multiple (e.g. line_item)
+        if existing_entity:
+            # Change Entity Type to a List
+            if not isinstance(existing_entity, list):
+                existing_entity = list([existing_entity])
+
+            existing_entity.append(new_entity)
+            document_entities[entity_key] = existing_entity
+        else:
+            document_entities.update({
+                entity_key: new_entity
+            })
 
     for entity in document.entities:
         # Fields detected. For a full list of fields for each processor see
@@ -109,22 +121,6 @@ def extract_document_entities(document: documentai.Document) -> dict:
             extract_document_entity(prop)
 
     return document_entities
-
-
-def separate_enriched_entities(entities: dict) -> Tuple[dict, dict]:
-    """
-    Separate Enriched Entities from Non-Enriched Entities
-    """
-    raw_entities = {}
-    enriched_entities = {}
-    for key, data in entities.items():
-        enriched_value = data.get("enriched_value")
-        if enriched_value:
-            enriched_entities[key] = enriched_value
-
-        raw_entities[key] = data.get("value")
-
-    return raw_entities, enriched_entities
 
 
 def _batch_process_documents(
@@ -292,28 +288,19 @@ def process_invoice(event, context):
 
     for document_proto in output_document_protos:
         entities = extract_document_entities(document_proto)
-        raw_entities, enriched_entities = separate_enriched_entities(entities)
+        entities["input_file_name"] = input_filename
 
-        raw_entities["input_file_name"] = input_filename
-        enriched_entities["input_file_name"] = input_filename
-
-        print("Raw Entities:", raw_entities)
-        print("Enriched Entities:", enriched_entities)
+        print("Entities:", entities)
 
         for address_field in address_fields:
-            if address_field in raw_entities:
+            if address_field in entities:
                 process_address(
-                    address_field, raw_entities[address_field], input_filename)
+                    address_field, entities[address_field]['value'], input_filename)
 
         # Write to BQ
-        print("Writing DocAI Entitiesto BQ")
-        # Add Raw Entities to DocAI Extracted Entities Table
-        result = write_to_bq(dataset_name, entities_table_name, raw_entities)
-        print(result)
-
-        print("Writing EKG Data to BQ")
-        # Add Enriched Entities to EKG Table
-        result = write_to_bq(dataset_name, ekg_table_name, enriched_entities)
+        print("Writing DocAI Entities to BQ")
+        # Add Entities to DocAI Extracted Entities Table
+        result = write_to_bq(dataset_name, entities_table_name, entities)
         print(result)
 
     cleanup_gcs(input_bucket, input_filename, gcs_output_bucket,
