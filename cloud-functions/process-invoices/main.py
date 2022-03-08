@@ -90,10 +90,7 @@ def extract_document_entities(document: documentai.Document) -> dict:
         entity_key = entity.type_.replace('/', '_')
         normalized_value = getattr(entity, "normalized_value", None)
 
-        new_entity = {
-            "value": entity.mention_text,
-            "enriched_value": normalized_value.text if normalized_value else None
-        }
+        new_entity_value = normalized_value.text if normalized_value else entity.mention_text
 
         existing_entity = document_entities.get(entity_key)
 
@@ -103,11 +100,11 @@ def extract_document_entities(document: documentai.Document) -> dict:
             if not isinstance(existing_entity, list):
                 existing_entity = list([existing_entity])
 
-            existing_entity.append(new_entity)
+            existing_entity.append(new_entity_value)
             document_entities[entity_key] = existing_entity
         else:
             document_entities.update({
-                entity_key: new_entity
+                entity_key: new_entity_value
             })
 
     for entity in document.entities:
@@ -291,17 +288,17 @@ def process_invoice(event, context):
         entities["input_file_name"] = input_filename
 
         print("Entities:", entities)
-
-        for address_field in address_fields:
-            if address_field in entities:
-                process_address(
-                    address_field, entities[address_field]['value'], input_filename)
-
-        # Write to BQ
         print("Writing DocAI Entities to BQ")
+
         # Add Entities to DocAI Extracted Entities Table
         result = write_to_bq(dataset_name, entities_table_name, entities)
         print(result)
+
+        # Send Address Data to PubSub
+        for address_field in address_fields:
+            if address_field in entities:
+                process_address(
+                    address_field, entities[address_field], input_filename)
 
     cleanup_gcs(input_bucket, input_filename, gcs_output_bucket,
                 output_directory, gcs_archive_bucket_name)
